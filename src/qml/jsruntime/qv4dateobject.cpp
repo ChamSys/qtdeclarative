@@ -355,7 +355,8 @@ static inline double DaylightSavingTA(double t, double /*localTZA*/)
     __time64_t  tt = (__time64_t)(t / msPerSecond);
     // _localtime_64_s returns non-zero on failure
     if (_localtime64_s(&tmtm, &tt) != 0)
-#elif !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+        // mingw64 9.2 claims that localtime_r() is not defined
+#elif !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(__MINGW32__) && !defined(__MINGW64__)
     long int tt = (long int)(t / msPerSecond);
     if (!localtime_r((const time_t*) &tt, &tmtm))
 #else
